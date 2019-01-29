@@ -1,0 +1,23 @@
+{
+    "name": "webdollar/webdollar-client-php",
+    "license": "ISC",
+    "type": "library",
+    "description": "JSON-RPC 2.0 client for WebDollar",
+    "keywords": ["WebDollar", "Client", "Blockchain", "http", "json", "json-rpc", "jsonrpc", "rpc"],
+    "authors": [
+        {
+            "name": "Razvan Ceana",
+            "email": "razvan@ceana.ro"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "graze/guzzle-jsonrpc": "^3.2",
+        "nesbot/carbon": "^2.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "WebDollar\\Client\\": "src"
+        }
+    }
+}
