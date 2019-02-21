@@ -1,4 +1,5 @@
-##WebDollar PHP client for JSON-RPC API 
+# WebDollar PHP client for JSON-RPC API 
+[![Build Status](https://travis-ci.org/WebDollar/webdollar-client-php.svg?branch=master)](https://travis-ci.org/WebDollar/webdollar-client-php)
 
 ## Installation
 
