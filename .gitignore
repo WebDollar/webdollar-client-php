@@ -2,5 +2,6 @@ vendor/
 composer.lock
 .idea
 phpunit.xml
+.phpunit.result.cache
 tests/tmp
 test.php

@@ -1,6 +1,6 @@
 <?php
 
-namespace WebDollar\Client\Tests\Model;
+namespace WebDollar\Client\Tests\Unit\Model;
 
 use PHPUnit\Framework\TestCase;
 use WebDollar\Client\Model\Account;

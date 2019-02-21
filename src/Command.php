@@ -9,6 +9,7 @@ use WebDollar\Client\Contracts\Component\IInput;
 use WebDollar\Client\Contracts\ICommand;
 use WebDollar\Client\Contracts\Methods\IMethod;
 use WebDollar\Client\Exception\MethodNotFoundException;
+use WebDollar\Client\Methods\AbstractMethod;
 
 /**
  * Class Command
@@ -34,7 +35,6 @@ class Command implements ICommand
     public function __construct($name)
     {
         $this->setName($name);
-        $this->_initMethod($name);
     }
 
     public function getClient():? ClientInterface
@@ -54,15 +54,21 @@ class Command implements ICommand
 
     public function setName(string $name): void
     {
-        $this->_validateName($name);
+        if (AbstractMethod::isValidMethodName($name) === FALSE)
+        {
+            throw new \InvalidArgumentException(sprintf('Command name "%s" is invalid.', $name));
+        }
+
         $this->_sName = $name;
+
+        $this->_initMethod($name);
     }
 
     public function run(IInput $oInput): PromiseInterface
     {
         if (($this->_oClient instanceof ClientInterface) === FALSE)
         {
-            throw new \RuntimeException(sprintf('Client must be an instance of %s', ClientInterface::SPEC));
+            throw new \RuntimeException(sprintf('Client must be an instance of %s', ClientInterface::class));
         }
 
         $oRequest = $this->_oClient->request(time(), $this->getName(), $oInput->getParameters());
@@ -79,22 +85,16 @@ class Command implements ICommand
 
     private function _initMethod(string $sName)
     {
-        $sClassName = __NAMESPACE__. '\\Methods\\' . ucfirst($sName);
+        $aMethods = AbstractMethod::getMethods();
 
-        if (class_exists($sClassName))
+        $sClassName = $aMethods[$sName] ?? NULL;
+
+        if ($sClassName !== NULL)
         {
             $this->_oMethod = new $sClassName();
             return;
         }
 
         throw new MethodNotFoundException(sprintf('Method with name %s was not found', $sName));
-    }
-
-    private function _validateName(string $sName)
-    {
-        if (!preg_match('/^[a-z0-9]+$/i', $sName))
-        {
-            throw new \InvalidArgumentException(sprintf('Command name "%s" is invalid.', $sName));
-        }
     }
 }

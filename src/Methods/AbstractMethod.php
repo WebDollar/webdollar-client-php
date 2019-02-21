@@ -95,4 +95,38 @@ abstract class AbstractMethod implements IMethod
 
         return static::$_aMethods;
     }
+
+    /**
+     * Dynamically add/or replace a method
+     *
+     * @param string $sMethodName
+     * @param string $sClass
+     */
+    public static function addMethod($sMethodName, $sClass)
+    {
+        // initialize the methods
+        static::getMethods();
+
+        if (static::isValidMethodName($sMethodName) === FALSE)
+        {
+            throw new \InvalidArgumentException(sprintf('Method name "%s" is invalid.', $sMethodName));
+        }
+
+        if (\is_string($sClass) === FALSE || \class_exists($sClass) === FALSE)
+        {
+            throw new \InvalidArgumentException(sprintf('Method class [%s] is not a string or the class does not exist', \is_string($sClass) ? $sClass : NULL));
+        }
+
+        static::$_aMethods[$sMethodName] = $sClass;
+    }
+
+    public static function isValidMethodName($sMethod)
+    {
+        if (!preg_match('/^[a-z0-9]+$/i', $sMethod))
+        {
+            return FALSE;
+        }
+
+        return TRUE;
+    }
 }

@@ -94,14 +94,12 @@ use WebDollar\Client\Methods\Syncing;
  * @method Syncing                             syncing()
  * @method PromiseInterface                    syncingAsync()
  */
-class WebDollar
+class WebDollarClient
 {
     /**
      * @var ClientInterface
      */
     protected $_oRPCClient;
-
-    const WEBDOLLAR_METHODS_NAMESPACE = '\\WebDollar\\Client\\Methods';
 
     public function __construct(array $options)
     {
@@ -126,6 +124,8 @@ class WebDollar
 
     public function execute(ICommand $command, array $params)
     {
+        echo PHP_EOL . "Executing " . $command->getName() . PHP_EOL;
+        echo "Parameters: " . var_export($params, TRUE) . PHP_EOL;
         return $this->executeAsync($command, $params)->wait();
     }
 
