@@ -3,35 +3,48 @@
 namespace WebDollar\Client\Methods;
 
 use Graze\GuzzleHttp\JsonRpc\Message\ResponseInterface;
-use WebDollar\Client\Contracts\ICommand;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use WebDollar\Client\Contracts\Methods\IMethod;
-use WebDollar\Client\Exception\MethodNotFoundException;
 
 /**
  * Class AbstractMethod
  * @package WebDollar\Client\Methods
  */
-abstract class AbstractMethod
+abstract class AbstractMethod implements IMethod
 {
-     /** @var string */
-    private $_sMethodName;
-
     /**
      * @var ResponseInterface
      */
     private $_oResponse;
 
-    public function __construct($methodName, ResponseInterface $oResponse)
+    /**
+     * @var array
+     */
+    private static $_aMethods;
+
+    /**
+     * @param ResponseInterface $oResponse
+     *
+     * @return IMethod
+     */
+    public function bind(ResponseInterface $oResponse): IMethod
     {
-        $this->_sMethodName = $methodName;
-        $this->_oResponse   = $oResponse;
+        $this->_oResponse = $oResponse;
+        return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getMethodName()
     {
-        return $this->_sMethodName;
+        return lcfirst(substr(static::class, strrpos(static::class, '\\')+1));
     }
 
+    /**
+     * @return ResponseInterface
+     */
     public function getResponse()
     {
         return $this->_oResponse;
@@ -40,26 +53,6 @@ abstract class AbstractMethod
     public function getRawResult()
     {
         return $this->getResponse()->getRpcResult();
-    }
-
-    /**
-     * @param ResponseInterface $oResponse
-     * @param ICommand          $oCommand
-     *
-     * @return IMethod
-     * @throws MethodNotFoundException
-     */
-    public static function constructFromResponseAndCommand(ResponseInterface $oResponse, ICommand $oCommand)
-    {
-        $sClassName = __NAMESPACE__. '\\' . ucfirst($oCommand->getName());
-
-        if (class_exists($sClassName))
-        {
-            return new $sClassName($oCommand->getName(), $oResponse);
-        }
-
-        throw new MethodNotFoundException(sprintf('Method with name %s was not found', $oCommand->getName()));
-
     }
 
     /**
@@ -76,5 +69,30 @@ abstract class AbstractMethod
         }
 
         return $sDefault;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getMethods()
+    {
+        if (static::$_aMethods !== NULL)
+        {
+            return static::$_aMethods;
+        }
+
+        $oFinder = new Finder();
+
+        /** @var SplFileInfo[] $aFiles */
+        $aFiles  = $oFinder->files()->name('*.php')->notName('Abstract*')->in(__DIR__);
+
+        static::$_aMethods = [];
+
+        foreach ($aFiles as $oFile)
+        {
+            static::$_aMethods[lcfirst($oFile->getBasename('.php'))] = implode('\\', array_filter([__NAMESPACE__, $oFile->getRelativePath(), $oFile->getBasename('.php')]));
+        }
+
+        return static::$_aMethods;
     }
 }

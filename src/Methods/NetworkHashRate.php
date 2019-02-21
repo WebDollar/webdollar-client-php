@@ -3,10 +3,10 @@
 namespace WebDollar\Client\Methods;
 
 /**
- * Class GetTransactionCount
+ * Class NetworkHashRate
  * @package WebDollar\Client\Methods
  */
-class GetTransactionCount extends AbstractMethod
+class NetworkHashRate extends AbstractMethod
 {
     /**
      * @return int

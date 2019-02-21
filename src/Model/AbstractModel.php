@@ -21,8 +21,15 @@ abstract class AbstractModel
             function (array $values) use ($sClassName) {
                 $oModel = new $sClassName();
 
+                $oReflectionClass = new \ReflectionClass($oModel);
+
                 foreach ($values as $sKey => $mValue)
                 {
+                    if ($oReflectionClass->hasProperty($sKey) === FALSE)
+                    {
+                        continue;
+                    }
+
                     $oModel->{$sKey} = $mValue;
                 }
 

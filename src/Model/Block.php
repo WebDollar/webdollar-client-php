@@ -3,6 +3,8 @@
 namespace WebDollar\Client\Model;
 
 use Carbon\Carbon;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Class Block
@@ -10,11 +12,6 @@ use Carbon\Carbon;
  */
 class Block extends AbstractModel
 {
-    /**
-     * @var int
-     */
-    private $id;
-
     /**
      * @var int
      */
@@ -58,11 +55,6 @@ class Block extends AbstractModel
     /**
      * @var string
      */
-    private $timestamp_block;
-
-    /**
-     * @var string
-     */
     private $hash_data;
 
     /**
@@ -73,12 +65,27 @@ class Block extends AbstractModel
     /**
      * @var string
      */
-    private $trx_hash_data;
+    private $posMinerAddress;
+
+    /**
+     * @var string
+     */
+    private $posMinerPublicKey;
+
+    /**
+     * @var string
+     */
+    private $posSignature;
+
+    /**
+     * @var string
+     */
+    private $trxs_hash_data;
 
     /**
      * @var int
      */
-    private $trx_number;
+    private $trxs_number;
 
     /**
      * @var array
@@ -104,6 +111,31 @@ class Block extends AbstractModel
      * @var string
      */
     private $block_raw;
+
+    /**
+     * @var bool
+     */
+    private $isPOS;
+
+    /**
+     * @var bool
+     */
+    private $isPOW;
+
+    /**
+     * @var Collection
+     */
+    private $_oTransactions;
+
+    /**
+     * @var Account
+     */
+    private $_oMinerAccount;
+
+    /**
+     * @var Account
+     */
+    private $_oResolverAccount;
 
     /**
      * @return int
@@ -175,11 +207,36 @@ class Block extends AbstractModel
     }
 
     /**
-     * @return string
+     * @return Account
      */
-    public function getMinerAddress()
+    public function getMinerAccount()
     {
-        return $this->miner_address;
+        if ($this->_oMinerAccount !== NULL)
+        {
+            return $this->_oMinerAccount;
+        }
+
+        return $this->_oMinerAccount = Account::constructFrom(['address' => $this->miner_address]);
+    }
+
+    public function getResolverAccount()
+    {
+        if ($this->_oResolverAccount !== NULL)
+        {
+            return $this->_oResolverAccount;
+        }
+
+        if ($this->posMinerAddress === NULL)
+        {
+            return $this->getMinerAccount();
+        }
+
+        return $this->_oResolverAccount = Account::constructFrom(['address' => $this->posMinerAddress, 'publicKey' => $this->posMinerPublicKey]);
+    }
+
+    public function getPOSSignature()
+    {
+        return $this->posSignature;
     }
 
     /**
@@ -187,7 +244,7 @@ class Block extends AbstractModel
      */
     public function getTransactionsHashData()
     {
-        return $this->trx_hash_data;
+        return $this->trxs_hash_data;
     }
 
     /**
@@ -195,29 +252,41 @@ class Block extends AbstractModel
      */
     public function getTransactionsNumber()
     {
-        return $this->trx_number;
+        return $this->trxs_number;
     }
 
     /**
-     * @return array
+     * @return Collection|Transaction[]
      */
     public function getTransactions()
     {
-        $aTransactions = [];
+        if ($this->_oTransactions !== NULL)
+        {
+            return $this->_oTransactions;
+        }
 
-        foreach ($this->trxs as $mTransaction)
+        $this->_oTransactions = new ArrayCollection();
+
+        foreach ($this->trxs as $nTransactionIndex => $mTransaction)
         {
             if (is_string($mTransaction))
             {
-                $aTransactions[] = Transaction::constructFrom(['hash' => $mTransaction]);
+                $oTransaction = Transaction::constructFrom(['trx_id' => $mTransaction]);
             }
             elseif (is_array($mTransaction))
             {
-                $aTransactions[] = Transaction::constructFrom($mTransaction);
+                $oTransaction = Transaction::constructFrom($mTransaction);
             }
+            else
+            {
+                throw new \RuntimeException(sprintf('Unable to process transaction index %s for block %s', $nTransactionIndex, $this->getNumber()));
+            }
+
+            $oTransaction->setBlock($this);
+            $this->_oTransactions->add($oTransaction);
         }
 
-        return $aTransactions;
+        return $this->_oTransactions;
     }
 
     /**
@@ -250,5 +319,15 @@ class Block extends AbstractModel
     public function getBlockRaw()
     {
         return $this->block_raw;
+    }
+
+    public function isPOS()
+    {
+        return $this->isPOS;
+    }
+
+    public function isPOW()
+    {
+        return $this->isPOW;
     }
 }

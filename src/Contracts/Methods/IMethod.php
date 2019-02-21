@@ -13,7 +13,7 @@ interface IMethod
     /**
      * @return string
      */
-    public function getName();
+    public function getMethodName();
 
     /**
      * @return ResponseInterface
@@ -24,4 +24,11 @@ interface IMethod
      * @return string|float|int|array
      */
     public function getRawResult();
+
+    /**
+     * @param ResponseInterface $oResponse
+     *
+     * @return IMethod
+     */
+    public function bind(ResponseInterface $oResponse): IMethod;
 }

@@ -2,19 +2,16 @@
 
 namespace WebDollar\Client\Contracts;
 
+use Graze\GuzzleHttp\JsonRpc\ClientInterface;
+use GuzzleHttp\Promise\PromiseInterface;
+use WebDollar\Client\Contracts\Component\IInput;
+
 /**
  * Interface ICommand
  * @package WebDollar\Contracts
  */
-interface ICommand extends \ArrayAccess, \Countable, \IteratorAggregate
+interface ICommand
 {
-    /**
-     * Converts the command parameters to an array
-     *
-     * @return array
-     */
-    public function toArray();
-
     /**
      * Get the name of the command
      *
@@ -23,11 +20,24 @@ interface ICommand extends \ArrayAccess, \Countable, \IteratorAggregate
     public function getName();
 
     /**
-     * Check if the command has a parameter by name.
-     *
-     * @param string $name Name of the parameter to check
-     *
-     * @return bool
+     * @param string $name
      */
-    public function hasParam($name);
+    public function setName(string $name): void;
+
+    /**
+     * @return ClientInterface|null
+     */
+    public function getClient():? ClientInterface;
+
+    /**
+     * @param ClientInterface $client
+     */
+    public function setClient(ClientInterface $client): void;
+
+    /**
+     * @param IInput $oInput
+     *
+     * @return PromiseInterface
+     */
+    public function run(IInput $oInput): PromiseInterface;
 }

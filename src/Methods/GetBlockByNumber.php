@@ -2,9 +2,6 @@
 
 namespace WebDollar\Client\Methods;
 
-use Graze\GuzzleHttp\JsonRpc\Message\ResponseInterface;
-use WebDollar\Client\Contracts\ICommand;
-use WebDollar\Client\Exception\MethodNotFoundException;
 use WebDollar\Client\Model\Block;
 
 /**
@@ -13,6 +10,9 @@ use WebDollar\Client\Model\Block;
  */
 class GetBlockByNumber extends AbstractMethod
 {
+    /**
+     * @return Block|null
+     */
     public function getBlock()
     {
         if ($this->getRawResult() === NULL)

@@ -5,6 +5,8 @@ namespace WebDollar\Client;
 use Graze\GuzzleHttp\JsonRpc\Client;
 use Graze\GuzzleHttp\JsonRpc\ClientInterface;
 use Graze\GuzzleHttp\JsonRpc\Message\ResponseInterface;
+use GuzzleHttp\Promise\PromiseInterface;
+use WebDollar\Client\Component\Input;
 use WebDollar\Client\Contracts\ICommand;
 use WebDollar\Client\Methods\AbstractMethod;
 use WebDollar\Client\Methods\Accounts;
@@ -28,53 +30,53 @@ use WebDollar\Client\Methods\Syncing;
  * @package WebDollar\Client
  *
  * @method ClientVersion                    clientVersion()
- * @method ClientVersion                    clientVersionAsync()
+ * @method PromiseInterface                 clientVersionAsync()
  * @method NetVersion                       netVersion()
- * @method NetVersion                       netVersionAsync()
+ * @method PromiseInterface                 netVersionAsync()
  * @method PeerCount                        peerCount()
- * @method PeerCount                        peerCountAsync()
+ * @method PromiseInterface                 peerCountAsync()
  * @method ProtocolVersion                  protocolVersion()
- * @method ProtocolVersion                  protocolVersionAsync()
+ * @method PromiseInterface                 protocolVersionAsync()
  * @method Syncing                          syncing()
- * @method Syncing                          syncingAsync()
+ * @method PromiseInterface                 syncingAsync()
  * @method Accounts                         accounts($withBalance = FALSE)
- * @method Accounts                         accountsAsync($withBalance = FALSE)
+ * @method PromiseInterface                 accountsAsync($withBalance = FALSE)
  * @method BlockNumber                      blockNumber()
- * @method BlockNumber                      blockNumberAsync()
+ * @method PromiseInterface                 blockNumberAsync()
  * @method GetBalance                       getBalance($address)
- * @method GetBalance                       getBalanceAsync($address)
+ * @method PromiseInterface                 getBalanceAsync($address)
  * @method GetTransactionCount              getTransactionCount($address, $tag = "latest")
- * @method GetTransactionCount              getTransactionCountAsync($address, $tag = "latest")
+ * @method PromiseInterface                 getTransactionCountAsync($address, $tag = "latest")
  * @method GetBlockTransactionCountByHash   getBlockTransactionCountByHash($hash)
- * @method GetBlockTransactionCountByHash   getBlockTransactionCountByHashAsync($hash)
+ * @method PromiseInterface                 getBlockTransactionCountByHashAsync($hash)
  * @method GetBlockTransactionCountByNumber getBlockTransactionCountByNumber($number)
- * @method GetBlockTransactionCountByNumber getBlockTransactionCountByNumberAsync($number)
+ * @method PromiseInterface                 getBlockTransactionCountByNumberAsync($number)
  * @method SendTransaction                  sendTransaction(array $options)
- * @method SendTransaction                  sendTransactionAsync(array $options)
+ * @method PromiseInterface                 sendTransactionAsync(array $options)
  * @method SendRawTransaction               sendRawTransaction($base64EncodedTransaction)
- * @method SendRawTransaction               sendRawTransactionAsync($base64EncodedTransaction)
+ * @method PromiseInterface                 sendRawTransactionAsync($base64EncodedTransaction)
  * @method GetBlockByHash                   getBlockByHash($hash, $returnTransactions = FALSE, $processHardForks = TRUE)
- * @method GetBlockByHash                   getBlockByHashAsync($hash, $returnTransactions = FALSE, $processHardForks = TRUE)
+ * @method PromiseInterface                 getBlockByHashAsync($hash, $returnTransactions = FALSE, $processHardForks = TRUE)
  * @method GetBlockByNumber                 getBlockByNumber($number, $returnTransactions = FALSE, $processHardForks = TRUE)
- * @method GetBlockByNumber                 getBlockByNumberAsync($number, $returnTransactions = FALSE, $processHardForks = TRUE)
+ * @method PromiseInterface                 getBlockByNumberAsync($number, $returnTransactions = FALSE, $processHardForks = TRUE)
  */
 class WebDollar
 {
     /**
      * @var ClientInterface
      */
-    protected $_oClient;
+    protected $_oRPCClient;
 
     const WEBDOLLAR_METHODS_NAMESPACE = '\\WebDollar\\Client\\Methods';
 
     public function __construct(array $options)
     {
         $options['rpc_error'] = TRUE;
-        $this->_oClient = isset($options['client']) && $options['client'] instanceof ClientInterface ? $options['client'] : NULL;
+        $this->_oRPCClient = isset($options['client']) && $options['client'] instanceof ClientInterface ? $options['client'] : NULL;
 
-        if ($this->_oClient === NULL)
+        if ($this->_oRPCClient === NULL)
         {
-            $this->_oClient = Client::factory($options['url'], $options);
+            $this->_oRPCClient = Client::factory($options['url'], $options);
         }
     }
 
@@ -82,30 +84,25 @@ class WebDollar
     {
         if (substr($name, -5) === 'Async')
         {
-            return $this->executeAsync(
-                $this->getCommand(substr($name, 0, -5), $params)
-            );
+            return $this->executeAsync($this->getCommand(substr($name, 0, -5)), $params);
         }
 
-        return $this->execute($this->getCommand($name, $params));
+        return $this->execute($this->getCommand($name), $params);
     }
 
-    public function execute(ICommand $command)
+    public function execute(ICommand $command, array $params)
     {
-        return $this->executeAsync($command)->wait();
+        return $this->executeAsync($command, $params)->wait();
     }
 
-    public function executeAsync(ICommand $command)
+    public function executeAsync(ICommand $command, array $params)
     {
-        $oRequest = $this->_oClient->request(time(), $command->getName(), $command->toArray());
-        return $this->_oClient->sendAsync($oRequest)->then(function(ResponseInterface $oResponse) use ($command) {
-            return AbstractMethod::constructFromResponseAndCommand($oResponse, $command);
-        });
+        return $command->run(new Input($params));
     }
 
-    public function getClient()
+    public function getRPCClient()
     {
-        return $this->_oClient;
+        return $this->_oRPCClient;
     }
 
     public static function factory(array $config = [])
@@ -113,8 +110,10 @@ class WebDollar
         return new static($config);
     }
 
-    protected function getCommand($sName, $args = [])
+    protected function getCommand($sName)
     {
-        return new Command($sName, $args);
+        $oCommand = new Command($sName);
+        $oCommand->setClient($this->_oRPCClient);
+        return $oCommand;
     }
 }

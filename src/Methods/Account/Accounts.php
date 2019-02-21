@@ -1,12 +1,13 @@
 <?php
 
-namespace WebDollar\Client\Methods;
+namespace WebDollar\Client\Methods\Account;
 
+use WebDollar\Client\Methods\AbstractMethod;
 use WebDollar\Client\Model\Account;
 
 /**
  * Class Accounts
- * @package WebDollar\Client\Methods
+ * @package WebDollar\Client\Methods\Account
  */
 class Accounts extends AbstractMethod
 {

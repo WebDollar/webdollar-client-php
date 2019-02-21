@@ -3,10 +3,10 @@
 namespace WebDollar\Client\Methods;
 
 /**
- * Class GetTransactionCount
+ * Class GetBlockCount
  * @package WebDollar\Client\Methods
  */
-class GetTransactionCount extends AbstractMethod
+class GetBlockCount extends AbstractMethod
 {
     /**
      * @return int

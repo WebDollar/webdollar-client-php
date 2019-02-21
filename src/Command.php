@@ -2,7 +2,13 @@
 
 namespace WebDollar\Client;
 
+use Graze\GuzzleHttp\JsonRpc\ClientInterface;
+use Graze\GuzzleHttp\JsonRpc\Message\ResponseInterface;
+use GuzzleHttp\Promise\PromiseInterface;
+use WebDollar\Client\Contracts\Component\IInput;
 use WebDollar\Client\Contracts\ICommand;
+use WebDollar\Client\Contracts\Methods\IMethod;
+use WebDollar\Client\Exception\MethodNotFoundException;
 
 /**
  * Class Command
@@ -16,14 +22,29 @@ class Command implements ICommand
     private $_sName;
 
     /**
-     * @var array
+     * @var ClientInterface
      */
-    private $_aArgs = [];
+    private $_oClient;
 
-    public function __construct($name, array $args = [])
+    /**
+     * @var IMethod
+     */
+    private $_oMethod;
+
+    public function __construct($name)
     {
-        $this->_sName = $name;
-        $this->_aArgs = $args;
+        $this->setName($name);
+        $this->_initMethod($name);
+    }
+
+    public function getClient():? ClientInterface
+    {
+        return $this->_oClient;
+    }
+
+    public function setClient(ClientInterface $oClient): void
+    {
+        $this->_oClient = $oClient;
     }
 
     public function getName()
@@ -31,51 +52,49 @@ class Command implements ICommand
         return $this->_sName;
     }
 
-    public function hasParam($name)
+    public function setName(string $name): void
     {
-        return \array_key_exists($name, $this->_aArgs);
+        $this->_validateName($name);
+        $this->_sName = $name;
     }
 
-    public function getIterator()
+    public function run(IInput $oInput): PromiseInterface
     {
-        return new \ArrayIterator($this->_aArgs);
-    }
-
-    public function & offsetGet($offset)
-    {
-        if (isset($this->_aArgs[$offset]))
+        if (($this->_oClient instanceof ClientInterface) === FALSE)
         {
-            return $this->_aArgs[$offset];
+            throw new \RuntimeException(sprintf('Client must be an instance of %s', ClientInterface::SPEC));
         }
 
-        $value = NULL;
-        return $value;
+        $oRequest = $this->_oClient->request(time(), $this->getName(), $oInput->getParameters());
+
+        return $this->_oClient->sendAsync($oRequest)->then(function(ResponseInterface $oResponse) {
+            return $this->getMethod()->bind($oResponse);
+        });
     }
 
-    public function offsetSet($offset, $value)
+    public function getMethod()
     {
-        $this->_aArgs[$offset] = $value;
+        return $this->_oMethod;
     }
 
-    public function offsetExists($offset)
+    private function _initMethod(string $sName)
     {
-        return isset($this->_aArgs[$offset]);
+        $sClassName = __NAMESPACE__. '\\Methods\\' . ucfirst($sName);
+
+        if (class_exists($sClassName))
+        {
+            $this->_oMethod = new $sClassName();
+            return;
+        }
+
+        throw new MethodNotFoundException(sprintf('Method with name %s was not found', $sName));
     }
 
-    public function offsetUnset($offset)
+    private function _validateName(string $sName)
     {
-        unset($this->_aArgs[$offset]);
+        if (!preg_match('/^[a-z0-9]+$/i', $sName))
+        {
+            throw new \InvalidArgumentException(sprintf('Command name "%s" is invalid.', $sName));
+        }
     }
-
-    public function toArray()
-    {
-        return $this->_aArgs;
-    }
-
-    public function count()
-    {
-        return \count($this->_aArgs);
-    }
-
-
 }

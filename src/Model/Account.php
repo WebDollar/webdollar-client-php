@@ -23,6 +23,21 @@ class Account extends AbstractModel
      */
     private $balance_raw;
 
+    /**
+     * @var string
+     */
+    private $publicKey;
+
+    /**
+     * @var string
+     */
+    private $privateKey;
+
+    /**
+     * @var string
+     */
+    private $version;
+
     public function getAddress()
     {
         return $this->address;
@@ -36,5 +51,20 @@ class Account extends AbstractModel
     public function getBalanceRaw()
     {
         return $this->balance_raw;
+    }
+
+    public function getPublicKey()
+    {
+        return $this->publicKey;
+    }
+
+    public function getPrivateKey()
+    {
+        return $this->privateKey;
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
     }
 }

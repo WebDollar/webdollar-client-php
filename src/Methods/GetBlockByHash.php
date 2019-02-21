@@ -2,9 +2,6 @@
 
 namespace WebDollar\Client\Methods;
 
-use Graze\GuzzleHttp\JsonRpc\Message\ResponseInterface;
-use WebDollar\Client\Contracts\ICommand;
-use WebDollar\Client\Exception\MethodNotFoundException;
 use WebDollar\Client\Model\Block;
 
 /**
@@ -13,6 +10,9 @@ use WebDollar\Client\Model\Block;
  */
 class GetBlockByHash extends AbstractMethod
 {
+    /**
+     * @return Block|null
+     */
     public function getBlock()
     {
         if ($this->getRawResult() === NULL)
@@ -21,10 +21,5 @@ class GetBlockByHash extends AbstractMethod
         }
 
         return Block::constructFrom($this->getRawResult());
-    }
-
-    public static function constructFromResponseAndCommand(ResponseInterface $oResponse, ICommand $oCommand)
-    {
-        throw new MethodNotFoundException(sprintf('Method with name %s is not supported', $oCommand->getName()));
     }
 }
