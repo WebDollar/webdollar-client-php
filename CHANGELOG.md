@@ -1,7 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [v1.1.0] - 2017-06-20
+## [v1.1.0] - 2017-02-24
+### Added
+- Option to add custom method
+
+### Removed
+- Remove not needed debug messages
+
+## [v1.1.0] - 2019-02-21
 ### Added
 - Method DeleteAccount
 - Method EncryptAccount
@@ -15,7 +22,6 @@ All notable changes to this project will be documented in this file.
 - Method GetTransactionByBlockNumberAndIndex
 - Method GetTransactionByHash
 - Method NetworkHashRate
-- Option to add custom method
 - Added tests
 
 ### Changed
