@@ -124,8 +124,6 @@ class WebDollarClient
 
     public function execute(ICommand $command, array $params)
     {
-        echo PHP_EOL . "Executing " . $command->getName() . PHP_EOL;
-        echo "Parameters: " . var_export($params, TRUE) . PHP_EOL;
         return $this->executeAsync($command, $params)->wait();
     }
 

@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Method GetTransactionByBlockNumberAndIndex
 - Method GetTransactionByHash
 - Method NetworkHashRate
+- Option to add custom method
 - Added tests
 
 ### Changed
