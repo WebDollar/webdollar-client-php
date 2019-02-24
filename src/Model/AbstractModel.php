@@ -9,6 +9,11 @@ namespace WebDollar\Client\Model;
 abstract class AbstractModel
 {
     /**
+     * @var array
+     */
+    protected $_rawData;
+
+    /**
      * @param array $values
      *
      * @return static
@@ -19,7 +24,8 @@ abstract class AbstractModel
 
         $fCreateModel = \Closure::bind(
             function (array $values) use ($sClassName) {
-                $oModel = new $sClassName();
+                $oModel           = new $sClassName();
+                $oModel->_rawData = $values;
 
                 $oReflectionClass = new \ReflectionClass($oModel);
 
@@ -40,5 +46,10 @@ abstract class AbstractModel
         );
 
         return $fCreateModel($values);
+    }
+
+    public function getRawData()
+    {
+        return $this->_rawData;
     }
 }
