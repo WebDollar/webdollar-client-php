@@ -1,7 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [v1.1.0] - 2017-02-24
+## [v1.2.0] - 2017-02-25
+### Added
+- getRawData for single models
+
+## [v1.1.1] - 2017-02-24
 ### Added
 - Option to add custom method
 

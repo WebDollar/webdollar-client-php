@@ -12,7 +12,7 @@ $ composer require webdollar/webdollar-client-php
 ```json
 {
     "require": {
-        "webdollar/webdollar-client-php": "^1.0.0"
+        "webdollar/webdollar-client-php": "^1.0"
     }
 }
 ```
@@ -23,9 +23,13 @@ $ composer require webdollar/webdollar-client-php
 <?php
 require 'vendor/autoload.php';
 
-use WebDollar\Client\WebDollar;
+use WebDollar\Client\WebDollarClient;
 
-$oClient = Webdollar::factory('http://localhost:3333');
+$oClient = WebDollarClient::factory([
+    'url'   => 'http://localhost:3333',
+    'auth'  => ['username', 'password'],
+    'debug' => FALSE,
+]);
 
 $oClient->clientVersion();
 
