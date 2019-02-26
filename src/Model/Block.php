@@ -306,6 +306,52 @@ class Block extends AbstractModel
     }
 
     /**
+     * @return float
+     */
+    public function getFeeReward()
+    {
+        $nFeeReward = 0.00;
+
+        foreach ($this->getTransactions() as $oTransaction)
+        {
+            $nFeeReward = $oTransaction->getFee();
+        }
+
+        return $nFeeReward;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFeeRewardRaw()
+    {
+        $nFeeReward = 0;
+
+        foreach ($this->getTransactions() as $oTransaction)
+        {
+            $nFeeReward = $oTransaction->getFeeRaw();
+        }
+
+        return $nFeeReward;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalReward()
+    {
+        return $this->getReward() + $this->getFeeReward();
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRewardRaw()
+    {
+        return $this->getRewardRaw() + $this->getFeeRewardRaw();
+    }
+
+    /**
      * @return \DateTimeInterface
      */
     public function getCreatedAtUTC()

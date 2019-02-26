@@ -103,6 +103,11 @@ class Transaction extends AbstractModel
     private $isConfirmed = FALSE;
 
     /**
+     * @var bool
+     */
+    private $isVirtual = FALSE;
+
+    /**
      * @var Block
      */
     private $_oBlock;
@@ -254,5 +259,10 @@ class Transaction extends AbstractModel
         }
 
         return $this->isConfirmed;
+    }
+
+    public function isVirtual()
+    {
+        return $this->isVirtual;
     }
 }
