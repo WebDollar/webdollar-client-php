@@ -1,7 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [v1.3.0] - 2017-02-26
+## [v1.4.0] - 2019-03-05
+### Added
+- Method NodeWaitList
+
+## [v1.3.0] - 2019-02-26
 ### Added
 - Block::getFeeReward
 - Block::getFeeRewardRaw
@@ -9,11 +13,11 @@ All notable changes to this project will be documented in this file.
 - Block::getTotalRewardRaw
 - Transaction::isVirtual
 
-## [v1.2.0] - 2017-02-25
+## [v1.2.0] - 2019-02-25
 ### Added
 - getRawData for single models
 
-## [v1.1.1] - 2017-02-24
+## [v1.1.1] - 2019-02-24
 ### Added
 - Option to add custom method
 

@@ -29,6 +29,7 @@ use WebDollar\Client\Methods\GetTransactionByHash;
 use WebDollar\Client\Methods\GetTransactionCount;
 use WebDollar\Client\Methods\NetVersion;
 use WebDollar\Client\Methods\NetworkHashRate;
+use WebDollar\Client\Methods\NodeWaitList;
 use WebDollar\Client\Methods\PeerCount;
 use WebDollar\Client\Methods\ProtocolVersion;
 use WebDollar\Client\Methods\SendRawTransaction;
@@ -83,6 +84,8 @@ use WebDollar\Client\Methods\Syncing;
  * @method PromiseInterface                    netVersionAsync()
  * @method NetworkHashRate                     networkHashRate()
  * @method PromiseInterface                    networkHashRateAsync()
+ * @method NodeWaitList                        nodeWaitList()
+ * @method PromiseInterface                    nodeWaitListAsync()
  * @method PeerCount                           peerCount()
  * @method PromiseInterface                    peerCountAsync()
  * @method ProtocolVersion                     protocolVersion()
