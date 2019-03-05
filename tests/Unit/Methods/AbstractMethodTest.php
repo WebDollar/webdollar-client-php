@@ -13,7 +13,7 @@ class AbstractMethodTest extends TestCase
 {
     public function testGetMethods()
     {
-        static::assertCount(27, AbstractMethod::getMethods());
+        static::assertCount(28, AbstractMethod::getMethods());
     }
 
     public function testAddMethod()
