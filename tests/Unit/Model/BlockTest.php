@@ -83,15 +83,19 @@ class BlockTest extends TestCase
                     "isConfirmed" => TRUE
                 ]
             ],
-            "reward"       =>  6000,
-            "reward_raw"   =>  60000000,
-            "createdAtUTC" =>  "2019-02-20T19:01:25.000Z",
-            "block_raw"    =>  "block_raw",
-            "isPOS"             =>  true,
-            "isPOW"             =>  false,
-            "posMinerAddress"   =>  'WEBD$gCrZ+RJXvKXSHp2b82MRUQT@eqRT5ffzAr$',
-            "posMinerPublicKey" =>  "8701bd60ddaea391764d108321da44a71fdcecec5771bb634835bff0d8492178",
-            "posSignature"      =>  "2258804812b60576d8aa5ef8d99e1db50d609b198e2fff7adaab85cb9513095afd8ef977eed98007feee72fe7783e56656ca8c859542b40790baa6a2d1b9800d"
+            "reward"            => 6000,
+            "reward_raw"        => 60000000,
+            "fee_reward"        => 8.178,
+            "fee_reward_raw"    => 81780,
+            "total_reward"      => 6008.178,
+            "total_reward_raw"  => 60081780,
+            "createdAtUTC"      => "2019-02-20T19:01:25.000Z",
+            "block_raw"         => "block_raw",
+            "isPOS"             => true,
+            "isPOW"             => false,
+            "posMinerAddress"   => 'WEBD$gCrZ+RJXvKXSHp2b82MRUQT@eqRT5ffzAr$',
+            "posMinerPublicKey" => "8701bd60ddaea391764d108321da44a71fdcecec5771bb634835bff0d8492178",
+            "posSignature"      => "2258804812b60576d8aa5ef8d99e1db50d609b198e2fff7adaab85cb9513095afd8ef977eed98007feee72fe7783e56656ca8c859542b40790baa6a2d1b9800d"
         ]);
 
         static::assertInstanceOf(Block::class, $oBlock);

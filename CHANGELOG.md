@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.4.1] - 2019-03-06
+### Added
+- Test GetTransactionByHashTest
+- Test NodeWaitListTest
+
+### Changed
+- Get fee_reward & total_reward directly from node API
+
 ## [v1.4.0] - 2019-03-05
 ### Added
 - Method NodeWaitList

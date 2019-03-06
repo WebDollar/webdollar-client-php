@@ -103,6 +103,26 @@ class Block extends AbstractModel
     private $reward_raw;
 
     /**
+     * @var float
+     */
+    private $fee_reward;
+
+    /**
+     * @var int
+     */
+    private $fee_reward_raw;
+
+    /**
+     * @var float
+     */
+    private $total_reward;
+
+    /**
+     * @var int
+     */
+    private $total_reward_raw;
+
+    /**
      * @var string
      */
     private $createdAtUTC;
@@ -310,14 +330,7 @@ class Block extends AbstractModel
      */
     public function getFeeReward()
     {
-        $nFeeReward = 0.00;
-
-        foreach ($this->getTransactions() as $oTransaction)
-        {
-            $nFeeReward = $oTransaction->getFee();
-        }
-
-        return $nFeeReward;
+        return $this->fee_reward;
     }
 
     /**
@@ -325,14 +338,7 @@ class Block extends AbstractModel
      */
     public function getFeeRewardRaw()
     {
-        $nFeeReward = 0;
-
-        foreach ($this->getTransactions() as $oTransaction)
-        {
-            $nFeeReward = $oTransaction->getFeeRaw();
-        }
-
-        return $nFeeReward;
+        return $this->fee_reward_raw;
     }
 
     /**
@@ -340,7 +346,7 @@ class Block extends AbstractModel
      */
     public function getTotalReward()
     {
-        return $this->getReward() + $this->getFeeReward();
+        return $this->total_reward;
     }
 
     /**
@@ -348,7 +354,7 @@ class Block extends AbstractModel
      */
     public function getTotalRewardRaw()
     {
-        return $this->getRewardRaw() + $this->getFeeRewardRaw();
+        return $this->total_reward_raw;
     }
 
     /**
