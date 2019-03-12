@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.4.2] - 2019-03-12
+### Added
+- Handle 401 (Unauthorized) http status
+- Handle 429 (Too Many Requests) http status
+- Process 401 & 429 http statuses into Client errors
+- Added tests
+
 ## [v1.4.1] - 2019-03-06
 ### Added
 - Test GetTransactionByHashTest

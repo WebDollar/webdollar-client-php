@@ -2,9 +2,9 @@
 
 namespace WebDollar\Client;
 
-use Graze\GuzzleHttp\JsonRpc\Client;
 use Graze\GuzzleHttp\JsonRpc\ClientInterface;
 use GuzzleHttp\Promise\PromiseInterface;
+use WebDollar\Client\Component\GrazeClient;
 use WebDollar\Client\Component\Input;
 use WebDollar\Client\Contracts\ICommand;
 use WebDollar\Client\Methods\Account\Accounts;
@@ -111,7 +111,7 @@ class WebDollarClient
 
         if ($this->_oRPCClient === NULL)
         {
-            $this->_oRPCClient = Client::factory($options['url'], $options);
+            $this->_oRPCClient = GrazeClient::factory($options['url'], $options);
         }
     }
 
