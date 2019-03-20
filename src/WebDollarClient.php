@@ -104,6 +104,11 @@ class WebDollarClient
      */
     protected $_oRPCClient;
 
+    /**
+     * @var string
+     */
+    protected $_sBaseURI;
+
     public function __construct(array $options)
     {
         $options['rpc_error'] = TRUE;
@@ -111,6 +116,7 @@ class WebDollarClient
 
         if ($this->_oRPCClient === NULL)
         {
+            $this->_sBaseURI   = $options['url'];
             $this->_oRPCClient = GrazeClient::factory($options['url'], $options);
         }
     }
@@ -138,6 +144,20 @@ class WebDollarClient
     public function getRPCClient()
     {
         return $this->_oRPCClient;
+    }
+
+    public function getBaseURI()
+    {
+        if ($this->_sBaseURI !== NULL)
+        {
+            return $this->_sBaseURI;
+        }
+
+        $oReflection         = new \ReflectionClass($this->getRPCClient());
+        $oHttpClientProperty = $oReflection->getProperty('httpClient');
+        $oHttpClientProperty->setAccessible(TRUE);
+        $oHttpClient = $oHttpClientProperty->getValue($this->getRPCClient());
+        return $this->_sBaseURI = $oHttpClient->getConfig('base_uri');
     }
 
     public static function factory(array $config = [])
