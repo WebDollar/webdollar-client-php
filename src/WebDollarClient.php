@@ -34,6 +34,7 @@ use WebDollar\Client\Methods\PeerCount;
 use WebDollar\Client\Methods\ProtocolVersion;
 use WebDollar\Client\Methods\SendRawTransaction;
 use WebDollar\Client\Methods\SendTransaction;
+use WebDollar\Client\Methods\SendAdvancedTransaction;
 use WebDollar\Client\Methods\Syncing;
 
 /**
@@ -92,6 +93,8 @@ use WebDollar\Client\Methods\Syncing;
  * @method PromiseInterface                    protocolVersionAsync()
  * @method SendTransaction                     sendTransaction(array $options)
  * @method PromiseInterface                    sendTransactionAsync(array $options)
+ * @method SendAdvancedTransaction             sendAdvancedTransaction(array $aFromConfig, array $aToConfig)
+ * @method PromiseInterface                    sendAdvancedTransactionAsync(array $aFromConfig, array $aToConfig)
  * @method SendRawTransaction                  sendRawTransaction($base64EncodedTransaction)
  * @method PromiseInterface                    sendRawTransactionAsync($base64EncodedTransaction)
  * @method Syncing                             syncing()

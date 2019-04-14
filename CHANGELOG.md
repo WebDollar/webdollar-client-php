@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.5.0] - 2019-04-14
+### Added
+- Method SendAdvancedTransaction
+
 ## [v1.4.3] - 2019-03-20
 ### Added
 - Method to get the baseUri for the client
